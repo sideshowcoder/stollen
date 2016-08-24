@@ -15,31 +15,30 @@
 ;; todo optimize as this takes ages
 ;; todo don't write the png every loop but just once at the end
 ;; todo make this colorfull
+;; todo make this multicore
 
-(let* ((size 100)
-       (png (make-instance 'png
-                          :color-type :grayscale-alpha
-                          :width size
-                          :height size))
-       (image (data-array png))
-       (max 100))
-  (loop for x from 0 to (- size 1)
-     do (loop for y from 0 to (- size 1)
-           do (let ((c (complex (- (/ x 100.0) 1.5) (- (/ y 100.0) 1.5)))
-                    (z (complex 0.0 0.0))
-                    (iteration 0))
-                (progn 
-                  (loop
-                     (setf z (+ (expt z 2) c))
-                     (incf iteration)
-                     (cond ((< 4 (abs z))
-                            (setf (aref image x y 1) iteration)
-                            (return))
-                           ((= iteration max)
-                            (setf (aref image x y 1) 255)
-                            (return))))
-                  (write-png png "mandelbrot.png"))))))
-
-
-    
+(defun draw-mandelbrot ()
+  (let* ((size 100)
+         (png (make-instance 'png
+                             :color-type :grayscale-alpha
+                             :width size
+                             :height size))
+         (image (data-array png))
+         (max 100))
+    (loop for x from 0 to (- size 1)
+       do (loop for y from 0 to (- size 1)
+             do (let ((c (complex (- (/ x 100.0) 1.5) (- (/ y 100.0) 1.5)))
+                      (z (complex 0.0 0.0))
+                      (iteration 0))
+                  (progn 
+                    (loop
+                       (setf z (+ (expt z 2) c))
+                       (incf iteration)
+                       (cond ((< 4 (abs z))
+                              (setf (aref image x y 1) iteration)
+                              (return))
+                             ((= iteration max)
+                              (setf (aref image x y 1) 255)
+                              (return))))
+                    (write-png png "mandelbrot.png")))))))
 
