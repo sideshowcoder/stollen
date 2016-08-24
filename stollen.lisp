@@ -13,6 +13,8 @@
 ;; todo create macro with-image creating an instace of the png and passing the image data-array to the function
 ;; todo wrap this in a function
 ;; todo optimize as this takes ages
+;; todo don't write the png every loop but just once at the end
+;; todo make this colorfull
 
 (let* ((size 100)
        (png (make-instance 'png
@@ -28,7 +30,7 @@
                     (iteration 0))
                 (progn 
                   (loop
-                     (setf z (+ (* z z) c))
+                     (setf z (+ (expt z 2) c))
                      (incf iteration)
                      (cond ((< 4 (abs z))
                             (setf (aref image x y 1) iteration)
@@ -37,11 +39,7 @@
                             (setf (aref image x y 1) 255)
                             (return))))
                   (write-png png "mandelbrot.png"))))))
-                           
-                          
-             
-         
-  
+
+
     
-  
 
