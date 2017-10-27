@@ -9,10 +9,10 @@
 (defmacro with-png-data (size path data &body body)
   (let ((png (gensym)))
     `(let* ((,png (make-instance 'png
-                              :color-type :grayscale-alpha
-                              :width ,size
-                              :height ,size))
-          (,data (data-array ,png)))
+                                 :color-type :grayscale-alpha
+                                 :width ,size
+                                 :height ,size))
+            (,data (data-array ,png)))
        (progn ,@body (write-png ,png ,path)))))
 
 (defun calculate-mandelbrot (x y max)
@@ -33,6 +33,3 @@
       (loop for x from 0 to (- size 1)
          do (loop for y from 0 to (- size 1)
                do (setf (aref image x y 1) (calculate-mandelbrot x y 100)))))))
-
-
-
