@@ -3,5 +3,4 @@
 
 (defpackage #:stollen
   (:use #:cl #:zpng)
-  (:export #:draw-mandelbrot))
-
+  (:export #:create-png #:draw-png #:point-value))

@@ -1,6 +1,6 @@
 (in-package #:stollen)
 
-(defun calculate-mandelbrot (x y max &key transpose-x transpose-y scale)
+(defun point-value (x y &key transpose-x transpose-y scale (max 255))
   (let ((c (complex (- (/ x (* 100.0 scale)) transpose-x) (- (/ y (* 100.0 scale)) transpose-y)))
         (z (complex 0.0 0.0))
         (i 0))
@@ -12,21 +12,23 @@
              ((= i max)
               (return 255))))))
 
-(defun mandelbrot-png (w h &key transpose-x transpose-y scale)
+(defun create-png (width height &key transpose-x transpose-y scale)
   (let* ((png (make-instance 'png
                              :color-type :grayscale-alpha
-                             :width w
-                             :height h))
+                             :width width
+                             :height height))
          (data (data-array png)))
-    (loop for x from 0 to (- h 1)
-       do (loop for y from 0 to (- w 1)
-             do (setf (aref data x y 1) (calculate-mandelbrot x y 255
-                                                              :transpose-y transpose-y
-                                                              :transpose-x transpose-x
-                                                              :scale scale))))
+    (loop for x from 0 to (- height 1)
+       do (loop for y from 0 to (- width 1)
+             do (setf (aref data x y 1) (point-value x y
+                                                     :transpose-y transpose-y
+                                                     :transpose-x transpose-x
+                                                     :scale scale))))
     png))
 
-;; Generate some images
-(write-png
- (mandelbrot-png 1500 1000 :transpose-x 1.0 :transpose-y 1.0 :scale 10)
- "~/Desktop/test.png")
+(defun draw-png (path &key width height (transpose-x 1.5) (transpose-y 1.8) (scale 1.0))
+  (write-png
+   (create-png width height
+               :transpose-x transpose-x
+               :transpose-y transpose-y
+               :scale scale) path))
